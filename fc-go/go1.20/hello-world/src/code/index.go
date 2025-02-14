@@ -3,39 +3,37 @@ package function
 import (
 	"context"
 	"fmt"
-	"net/http"
-	"strings"
+
+	"github.com/cloudevents/sdk-go/v2/event"
 )
 
-// Handle an HTTP Request.
-func handler(ctx context.Context, res http.ResponseWriter, req *http.Request) {
+// Handle an event.
+func handler(ctx context.Context, e event.Event) (*event.Event, error) {
 	/*
 	 * YOUR CODE HERE
 	 *
+	 * Try running `go test`.  Add more test as you code in `handle_test.go`.
 	 */
 
-	fmt.Println("Received request")
-	fmt.Println(prettyPrint(req))      // echo to local output
-	// fmt.Fprintf(res, prettyPrint(req)) // echo to caller
-	fmt.Fprintf(res, "欢迎!") // echo to caller
+	fmt.Println("Received event")
+	fmt.Println(e) // echo to local output
+	return &e, nil // echo to caller
 }
 
-func prettyPrint(req *http.Request) string {
-	b := &strings.Builder{}
-	fmt.Fprintf(b, "%v %v %v %v\n", req.Method, req.URL, req.Proto, req.Host)
-	for k, vv := range req.Header {
-		for _, v := range vv {
-			fmt.Fprintf(b, "  %v: %v\n", k, v)
-		}
-	}
+/*
+Other supported function signatures:
 
-	if req.Method == "POST" {
-		req.ParseForm()
-		fmt.Fprintln(b, "Body:")
-		for k, v := range req.Form {
-			fmt.Fprintf(b, "  %v: %v\n", k, v)
-		}
-	}
+	Handle()
+	Handle() error
+	Handle(context.Context)
+	Handle(context.Context) error
+	Handle(event.Event)
+	Handle(event.Event) error
+	Handle(context.Context, event.Event)
+	Handle(context.Context, event.Event) error
+	Handle(event.Event) *event.Event
+	Handle(event.Event) (*event.Event, error)
+	Handle(context.Context, event.Event) *event.Event
+	Handle(context.Context, event.Event) (*event.Event, error)
 
-	return b.String()
-}
+*/
